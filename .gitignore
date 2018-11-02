@@ -110,3 +110,6 @@ venv.bak/
 package*.json
 package-*.json
 
+# secrets
+*.pem
+*.key

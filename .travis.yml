@@ -19,7 +19,11 @@ branches:
   - prod
 
 before_install:
-  - wget https://raw.githubusercontent.com/Sage-Bionetworks/Agora/$TRAVIS_BRANCH/package.json -o package-$TRAVIS_BRANCH.json
+  - openssl aes-256-cbc -K $encrypted_7dd696d233c6_key -iv $encrypted_7dd696d233c6_iv -in toptal_org-sagebase-scicomp.pem.enc -out ~\/.ssh/toptal_org-sagebase-scicomp.pem -d
+  - eval "$(ssh-agent -s)"
+  - chmod 600 ./toptal_org-sagebase-scicomp.pem
+  - echo -e "Host $BASTIAN_HOST\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+  - ssh-add ./toptal_org-sagebase-scicomp.pem
 
 install:
   - sudo apt-get install -y build-essential libssl-dev
@@ -33,7 +37,7 @@ jobs:
   include:
     - stage: get-data
       script:
-        - ./get-data-aws.sh || travis_terminate 1
+        - ./get-data.sh || travis_terminate 1
     - stage: import-data
       script:
-        - ./get-data-aws.sh || travis_terminate 1
+        - ./import-data.sh || travis_terminate 1
