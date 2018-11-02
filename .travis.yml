@@ -1,0 +1,39 @@
+language: python
+python: 3.5
+cache: pip
+fast_finish: true
+
+branches:
+  only:
+  - develop
+  - staging
+  - prod
+
+matrix:
+  fast_finish: true
+
+branches:
+  only:
+  - develop
+  - staging
+  - prod
+
+before_install:
+  - wget https://raw.githubusercontent.com/Sage-Bionetworks/Agora/$TRAVIS_BRANCH/package.json -o package-$TRAVIS_BRANCH.json
+
+install:
+  - sudo apt-get install -y build-essential libssl-dev
+  - sudo pip install synapseclient[pandas,pysftp]
+
+stages:
+  - name: get-data
+  - name: import-data
+
+jobs:
+  include:
+    - stage: get-data
+      script:
+        - ./get-data-aws.sh || travis_terminate 1
+    - stage: import-data
+      script:
+        - ./get-data-aws.sh || travis_terminate 1
