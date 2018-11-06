@@ -30,14 +30,10 @@ install:
   - sudo pip install synapseclient[pandas,pysftp]
 
 stages:
-  - name: get-data
   - name: import-data
 
 jobs:
   include:
-    - stage: get-data
-      script:
-        - ./get-data.sh || travis_terminate 1
     - stage: import-data
       script:
         - ./import-data.sh || travis_terminate 1
