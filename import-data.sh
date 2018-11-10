@@ -10,6 +10,11 @@ DATA_DIR=$CURRENT_DIR/data
 TEAM_IMAGES_DIR=$DATA_DIR/team_images
 REMOTE_DATA_DIR=data_$TRAVIS_BRANCH
 
+# double interpolate vars from travis
+eval export "DB_HOST=\$DB_HOST_$TRAVIS_BRANCH"
+eval export "DB_USER=\$DB_USER_$TRAVIS_BRANCH"
+eval export "DB_PASS=\$DB_PASS_$TRAVIS_BRANCH"
+
 # get package.json file from agora repo
 wget https://raw.githubusercontent.com/Sage-Bionetworks/Agora/$TRAVIS_BRANCH/package.json -O $CURRENT_DIR/package-$TRAVIS_BRANCH.json
 
@@ -30,11 +35,12 @@ scp -i ~/.ssh/toptal_org-sagebase-scicomp.pem -r $DATA_DIR ec2-user@$BASTIAN_HOS
 
 # Imports the data and wipes the current collections.  All executed from the bastian host.
 # Not using --mode upsert fow now because we don't have unique indexes properly set for the collections
-ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST mongoimport -h DB_HOST_$TRAVIS_BRANCH -d agora -u DB_USER_$TRAVIS_BRANCH -p DB_PASS_$TRAVIS_BRANCH --collection genes --jsonArray --drop --file $REMOTE_DATA_DIR/rnaseq_differential_expression.json
-ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST mongoimport -h DB_HOST_$TRAVIS_BRANCH -d agora -u DB_USER_$TRAVIS_BRANCH -p DB_PASS_$TRAVIS_BRANCH --collection geneslinks --jsonArray --drop --file $REMOTE_DATA_DIR/network.json
-ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST mongoimport -h DB_HOST_$TRAVIS_BRANCH -d agora -u DB_USER_$TRAVIS_BRANCH -p DB_PASS_$TRAVIS_BRANCH --collection geneinfo --jsonArray --drop --file $REMOTE_DATA_DIR/gene_info.json
-ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST mongoimport -h DB_HOST_$TRAVIS_BRANCH -d agora -u DB_USER_$TRAVIS_BRANCH -p DB_PASS_$TRAVIS_BRANCH --collection teaminfo --jsonArray --drop --file $REMOTE_DATA_DIR/team_info.json
+data_files=(DATA_DIR
+ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --collection genes --jsonArray --drop --file $REMOTE_DATA_DIR/rnaseq_differential_expression.json
+ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --collection geneslinks --jsonArray --drop --file $REMOTE_DATA_DIR/network.json
+ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --collection geneinfo --jsonArray --drop --file $REMOTE_DATA_DIR/gene_info.json
+ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --collection teaminfo --jsonArray --drop --file $REMOTE_DATA_DIR/team_info.json
 
 # pushd $CURRENT_DIR/data/team_images
-# ls -1r *.jpg | while read x; do ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST mongofiles -h DB_HOST_$TRAVIS_BRANCH -d agora -u DB_USER_$TRAVIS_BRANCH -p DB_PASS_$TRAVIS_BRANCH -v put $x --replace; echo $x; done
+# ls -1r *.jpg | while read x; do ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST mongofiles -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS -v put $x --replace; echo $x; done
 # popd
