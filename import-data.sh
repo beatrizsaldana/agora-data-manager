@@ -28,7 +28,7 @@ synapse -u $SYNAPSE_USERNAME -p $SYNAPSE_PASSWORD cat --version $DATA_VERSION sy
 done
 
 echo "files after download:"
-ls -al DATA_DIR
+ls -al $DATA_DIR
 
 # downloaded synapse data files are in format: gene_info.json.synapse_download_33653394
 # rename files to consistent names (gene_info.json.synapse_download_33653394 --> gene_info.json)
