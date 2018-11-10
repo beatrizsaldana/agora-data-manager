@@ -28,6 +28,7 @@ before_install:
 install:
   - sudo apt-get install -y build-essential libssl-dev
   - sudo pip install synapseclient[pandas,pysftp]
+  - synapse --version
 
 stages:
   - name: import-data
