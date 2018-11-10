@@ -8,7 +8,7 @@ CURRENT_DIR=$(pwd)
 PARENT_DIR="$(dirname "$CURRENT_DIR")"
 DATA_DIR=$CURRENT_DIR/data
 TEAM_IMAGES_DIR=$DATA_DIR/team_images
-REMOTE_DATA_DIR=data_$TRAVIS_BRANCH
+REMOTE_DATA_DIR=/tmp/data_$TRAVIS_BRANCH
 
 # double interpolate vars from travis
 eval export "DB_HOST=\$DB_HOST_$TRAVIS_BRANCH"
@@ -31,10 +31,10 @@ done
 synapse -u $SYNAPSE_USERNAME -p $SYNAPSE_PASSWORD get -r --downloadLocation $TEAM_IMAGES_DIR/ syn12861877
 
 # copy data to bastian machine
-scp -i ~/.ssh/toptal_org-sagebase-scicomp.pem -r $DATA_DIR ec2-user@$BASTIAN_HOST:~/$REMOTE_DATA_DIR
+scp -i ~/.ssh/toptal_org-sagebase-scicomp.pem -r $DATA_DIR ec2-user@$BASTIAN_HOST:$REMOTE_DATA_DIR
 
 # Imports the data and wipes the current collections.  All executed from the bastian host.
-# Not using --mode upsert fow now because we don't have unique indexes properly set for the collections
+# Not using --mode upsert for now because we don't have unique indexes properly set for the collections
 ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --collection genes --jsonArray --drop --file $REMOTE_DATA_DIR/rnaseq_differential_expression.json
 ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --collection geneslinks --jsonArray --drop --file $REMOTE_DATA_DIR/network.json
 ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --collection geneinfo --jsonArray --drop --file $REMOTE_DATA_DIR/gene_info.json
