@@ -38,6 +38,7 @@ done
 synapse -u $SYNAPSE_USERNAME -p $SYNAPSE_PASSWORD get -r --downloadLocation $TEAM_IMAGES_DIR/ syn12861877
 
 # copy data to bastian machine
+ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST rm -rf $REMOTE_DATA_DIR
 scp -i ~/.ssh/toptal_org-sagebase-scicomp.pem -r $DATA_DIR ec2-user@$BASTIAN_HOST:$REMOTE_DATA_DIR
 
 # Imports the data and wipes the current collections.  All executed from the bastian host.
