@@ -27,6 +27,13 @@ synapse -u $SYNAPSE_USERNAME -p $SYNAPSE_PASSWORD cat --version $DATA_VERSION sy
   synapse -u $SYNAPSE_USERNAME -p $SYNAPSE_PASSWORD get --downloadLocation $DATA_DIR -v $version $id ;
 done
 
+# downloaded synapse data files are in format: gene_info.json.synapse_download_33653394
+# rename files to consistent names (gene_info.json.synapse_download_33653394 --> gene_info.json)
+for file in $DATA_DIR/*synapse_download*
+do
+  mv "$file" "${file/.synapse_download*/}"
+done
+
 [ -d $TEAM_IMAGES_DIR/ ] || mkdir $TEAM_IMAGES_DIR/
 synapse -u $SYNAPSE_USERNAME -p $SYNAPSE_PASSWORD get -r --downloadLocation $TEAM_IMAGES_DIR/ syn12861877
 
