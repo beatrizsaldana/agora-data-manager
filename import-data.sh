@@ -35,7 +35,6 @@ scp -i ~/.ssh/toptal_org-sagebase-scicomp.pem -r $DATA_DIR ec2-user@$BASTIAN_HOS
 
 # Imports the data and wipes the current collections.  All executed from the bastian host.
 # Not using --mode upsert fow now because we don't have unique indexes properly set for the collections
-data_files=(DATA_DIR
 ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --collection genes --jsonArray --drop --file $REMOTE_DATA_DIR/rnaseq_differential_expression.json
 ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --collection geneslinks --jsonArray --drop --file $REMOTE_DATA_DIR/network.json
 ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --collection geneinfo --jsonArray --drop --file $REMOTE_DATA_DIR/gene_info.json
