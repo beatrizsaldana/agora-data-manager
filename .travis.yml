@@ -32,10 +32,10 @@ install:
   - synapse --version
 
 stages:
-  - name: import-data
+  - name: updatedb
 
 jobs:
   include:
-    - stage: import-data
+    - stage: updatedb
       script:
-        - ./import-data.sh || travis_terminate 1
+        - ./updatedb.sh || travis_terminate 1
