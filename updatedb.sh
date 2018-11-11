@@ -14,4 +14,4 @@ ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST mkdir -p /t
 
 scp -i ~/.ssh/toptal_org-sagebase-scicomp.pem import-data.sh ec2-user@$BASTIAN_HOST:/tmp/work/.
 
-ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST bash /tmp/work/import-data.sh $TRAVIS_BRANCH $SYNAPSE_USERNAME $SYNAPSE_PASSWORD $DB_HOST $DB_USER $DB_PASS
+ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST "bash /tmp/work/import-data.sh $TRAVIS_BRANCH $SYNAPSE_USERNAME $SYNAPSE_PASSWORD $DB_HOST $DB_USER $DB_PASS"
