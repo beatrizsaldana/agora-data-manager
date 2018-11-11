@@ -9,15 +9,6 @@ branches:
   - staging
   - prod
 
-matrix:
-  fast_finish: true
-
-branches:
-  only:
-  - develop
-  - staging
-  - prod
-
 before_install:
   - openssl aes-256-cbc -K $encrypted_7dd696d233c6_key -iv $encrypted_7dd696d233c6_iv -in toptal_org-sagebase-scicomp.pem.enc -out ~/.ssh/toptal_org-sagebase-scicomp.pem -d
   - eval "$(ssh-agent -s)"
@@ -25,17 +16,21 @@ before_install:
   - echo -e "Host $BASTIAN_HOST\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
   - ssh-add ~/.ssh/toptal_org-sagebase-scicomp.pem
 
-install:
-  - sudo apt-get install -y build-essential libssl-dev
-  - sudo pip install synapseclient[pandas,pysftp]
-  - sudo pip freeze
-  - synapse --version
+#install:
+#  - sudo apt-get install -y build-essential libssl-dev
+#  - sudo pip install synapseclient[pandas,pysftp]
+#  - sudo pip freeze
+#  - synapse --version
 
-stages:
-  - name: updatedb
+#stages:
+#  - name: updatedb
 
-jobs:
-  include:
-    - stage: updatedb
-      script:
-        - ./updatedb.sh || travis_terminate 1
+#jobs:
+#  include:
+#    - stage: updatedb
+#      script:
+#        - ./updatedb.sh || travis_terminate 1
+
+script:
+  - ./updatedb.sh || travis_terminate 1
+
