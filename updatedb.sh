@@ -1,6 +1,5 @@
-# This script gets data from synapse then imports the data to an agora DB.
-# This script needs to be run from an agora bastian machine, it assumes that
-# the bastian is already setup with mongoimport and mongofiles tools
+# Update agora db from a build machine by running an import script
+# on a bastian host
 #!/bin/bash
 set -e
 
@@ -15,7 +14,12 @@ ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST "mkdir -p /
 
 scp -i ~/.ssh/toptal_org-sagebase-scicomp.pem import-data.sh ec2-user@$BASTIAN_HOST:/tmp/work/.
 
+# Escape chars in vars
 q_mid=\'\\\'\'
-SYNAPSE_PASSWORD_esc="'${SYNAPSE_PASSWORD//\'/$q_mid}'"
+SYNAPSE_USERNAME_ESC="'${SYNAPSE_USERNAME//\'/$q_mid}'"
+SYNAPSE_PASSWORD_ESC="'${SYNAPSE_PASSWORD//\'/$q_mid}'"
+DB_USER_ESC="'${DB_USER//\'/$q_mid}'"
+DB_PASS_ESC="'${DB_PASS//\'/$q_mid}'"
 
-ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST "bash /tmp/work/import-data.sh $TRAVIS_BRANCH $SYNAPSE_USERNAME $SYNAPSE_PASSWORD_esc $DB_HOST $DB_USER $DB_PASS"
+# run import on bastian
+ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST "bash /tmp/work/import-data.sh $TRAVIS_BRANCH $SYNAPSE_USERNAME_ESC $SYNAPSE_PASSWORD_ESC $DB_HOST $DB_USER_ESC $DB_PASS_ESC"
