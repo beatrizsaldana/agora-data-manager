@@ -2,7 +2,7 @@
 # This script needs to be run from an agora bastian machine, it assumes that
 # the bastian is already setup with mongoimport and mongofiles tools
 #!/bin/bash
-set -ex
+set -e
 
 # double interpolate vars from travis
 eval export "DB_HOST=\$DB_HOST_$TRAVIS_BRANCH"

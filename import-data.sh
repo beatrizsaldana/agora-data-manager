@@ -2,7 +2,7 @@
 # This script needs to be run from an agora bastian machine, it assumes that
 # the bastian is already setup with mongoimport and mongofiles tools
 #!/bin/bash
-set -ex
+set -e
 
 TRAVIS_BRANCH=$1
 SYNAPSE_USERNAME=$2
