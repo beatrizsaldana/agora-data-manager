@@ -4,56 +4,52 @@
 #!/bin/bash
 set -ex
 
+TRAVIS_BRANCH=$1
+SYNAPSE_USERNAME=$2
+SYNAPSE_PASSWORD=$3
+DB_HOST=$4
+DB_USER=$5
+DB_PASS=$6
+
 CURRENT_DIR=$(pwd)
 PARENT_DIR="$(dirname "$CURRENT_DIR")"
-DATA_DIR=$CURRENT_DIR/data
+TMP_DIR=/tmp
+WORKING_DIR=$TMP_DIR/work
+DATA_DIR=$WORKING_DIR/data
 TEAM_IMAGES_DIR=$DATA_DIR/team_images
-REMOTE_DATA_DIR=/tmp/data_$TRAVIS_BRANCH
-
-# double interpolate vars from travis
-eval export "DB_HOST=\$DB_HOST_$TRAVIS_BRANCH"
-eval export "DB_USER=\$DB_USER_$TRAVIS_BRANCH"
-eval export "DB_PASS=\$DB_PASS_$TRAVIS_BRANCH"
 
 # get package.json file from agora repo
-wget https://raw.githubusercontent.com/Sage-Bionetworks/Agora/$TRAVIS_BRANCH/package.json -O $CURRENT_DIR/package-$TRAVIS_BRANCH.json
+wget https://raw.githubusercontent.com/Sage-Bionetworks/Agora/$TRAVIS_BRANCH/package.json -O $WORKING_DIR/package-$TRAVIS_BRANCH.json
 
 # Version key/value should be on his own line
-DATA_VERSION=$(cat $CURRENT_DIR/package-$TRAVIS_BRANCH.json | grep data-version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')
+DATA_VERSION=$(cat $WORKING_DIR/package-$TRAVIS_BRANCH.json | grep data-version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')
 echo "package-$TRAVIS_BRANCH.json DATA_VERSION = $DATA_VERSION"
 
-[ -d $DATA_DIR/ ] || mkdir $DATA_DIR/
 synapse -u $SYNAPSE_USERNAME -p $SYNAPSE_PASSWORD cat --version $DATA_VERSION syn13363290 | tail -n +2 | while IFS=, read -r id version; do
   synapse -u $SYNAPSE_USERNAME -p $SYNAPSE_PASSWORD get --downloadLocation $DATA_DIR -v $version $id ;
 done
 
-echo "files after download:"
-ls -al $DATA_DIR
-
 # downloaded synapse data files are in format: gene_info.json.synapse_download_33653394
 # rename files to consistent names (gene_info.json.synapse_download_33653394 --> gene_info.json)
-for file in $DATA_DIR/*synapse_download*
-do
-  mv "$file" "${file/.synapse_download*/}"
-done
+#for file in $DATA_DIR/*synapse_download*
+#do
+#  mv "$file" "${file/.synapse_download*/}"
+#done
 
-[ -d $TEAM_IMAGES_DIR/ ] || mkdir $TEAM_IMAGES_DIR/
 synapse -u $SYNAPSE_USERNAME -p $SYNAPSE_PASSWORD get -r --downloadLocation $TEAM_IMAGES_DIR/ syn12861877
 
-# copy data to bastian machine
-ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST rm -rf $REMOTE_DATA_DIR
-scp -i ~/.ssh/toptal_org-sagebase-scicomp.pem -r $DATA_DIR ec2-user@$BASTIAN_HOST:$REMOTE_DATA_DIR
-
-echo "files after copy to bastion:"
-ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST ls -al $REMOTE_DATA_DIR
+echo "files after download:"
+ls -al $WORKING_DIR
+ls -al $DATA_DIR
+ls -al $TEAM_IMAGES_DIR
 
 # Imports the data and wipes the current collections.  All executed from the bastian host.
 # Not using --mode upsert for now because we don't have unique indexes properly set for the collections
-ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --collection genes --authenticationDatabase admin --jsonArray --drop --file $REMOTE_DATA_DIR/rnaseq_differential_expression.json
-ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --collection geneslinks --authenticationDatabase admin --jsonArray --drop --file $REMOTE_DATA_DIR/network.json
-ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --collection geneinfo --authenticationDatabase admin --jsonArray --drop --file $REMOTE_DATA_DIR/gene_info.json
-ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --collection teaminfo --authenticationDatabase admin --jsonArray --drop --file $REMOTE_DATA_DIR/team_info.json
+mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection genes --jsonArray --drop --file $DATA_DIR/rnaseq_differential_expression.json
+mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection geneslinks --jsonArray --drop --file $DATA_DIR/network.json
+mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection geneinfo --jsonArray --drop --file $DATA_DIR/gene_info.json
+mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection teaminfo --jsonArray --drop --file $DATA_DIR/team_info.json
 
-# pushd $CURRENT_DIR/data/team_images
-# ls -1r *.jpg | while read x; do ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST mongofiles -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS -v put $x --replace; echo $x; done
-# popd
+pushd $TEAM_IMAGES_DIR
+ls -1r *.jpg | while read x; do mongofiles -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin -v put $x --replace; echo $x; done
+popd
