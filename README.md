@@ -6,6 +6,10 @@ This project allows Agora maintainers to update the Agora database with
 new versions of gene data from Synapse.  This is a, manually triggered,
 self service update. 
 
+# Execution
+
+![alt text][db_update]
+
 # Worflow
 
 To deploy an updated data version to the Agora development database
@@ -18,3 +22,6 @@ on the `develop` branch.
 To deploy an updated data version to the staging and prod database.
 1. Merge data-version update to staging and prod branches.
 2. Rerun the agora-data-manager build for those branches.
+
+
+[db_update]: diagram1.png "update diagram"
