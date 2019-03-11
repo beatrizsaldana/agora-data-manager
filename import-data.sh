@@ -27,7 +27,7 @@ DATA_VERSION=$(cat $WORKING_DIR/package-$TRAVIS_BRANCH.json | grep data-version 
 echo "package-$TRAVIS_BRANCH.json DATA_VERSION = $DATA_VERSION"
 
 # get data from synapse
-synapse -u $SYNAPSE_USERNAME -p $SYNAPSE_PASSWORD cat --version $DATA_VERSION syn13363290 | tail -n +2 | while IFS=, read -r id version; do
+synapse -u $SYNAPSE_USERNAME -p $SYNAPSE_PASSWORD cat --version $DATA_VERSION syn18387112 | tail -n +2 | while IFS=, read -r id version; do
   synapse -u $SYNAPSE_USERNAME -p $SYNAPSE_PASSWORD get --downloadLocation $DATA_DIR -v $version $id ;
 done
 
