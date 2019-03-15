@@ -22,7 +22,7 @@ ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST "rm -rf /tm
 ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST "mkdir -p /tmp/work/data/team_images"
 
 # setup script on bastian
-scp -i ~/.ssh/toptal_org-sagebase-scicomp.pem import-data.sh ec2-user@$BASTIAN_HOST:/tmp/work/.
+scp -i ~/.ssh/toptal_org-sagebase-scicomp.pem import-data.sh data-manifest.json ec2-user@$BASTIAN_HOST:/tmp/work/.
 
 # run import on bastian
 ssh -i ~/.ssh/toptal_org-sagebase-scicomp.pem ec2-user@$BASTIAN_HOST "bash /tmp/work/import-data.sh $TRAVIS_BRANCH $SYNAPSE_USERNAME_ESC $SYNAPSE_PASSWORD_ESC $DB_HOST $DB_USER_ESC $DB_PASS_ESC"
