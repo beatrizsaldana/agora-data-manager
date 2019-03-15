@@ -19,19 +19,18 @@ WORKING_DIR=$TMP_DIR/work
 DATA_DIR=$WORKING_DIR/data
 TEAM_IMAGES_DIR=$DATA_DIR/team_images
 
-# get data version from agora repo
-wget https://raw.githubusercontent.com/Sage-Bionetworks/Agora/$TRAVIS_BRANCH/package.json -O $WORKING_DIR/package-$TRAVIS_BRANCH.json
-
 # Version key/value should be on his own line
-DATA_VERSION=$(cat $WORKING_DIR/package-$TRAVIS_BRANCH.json | grep data-version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')
-echo "package-$TRAVIS_BRANCH.json DATA_VERSION = $DATA_VERSION"
+DATA_VERSION=$(cat data-manifest.json | grep data-version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')
+DATA_MANIFEST_ID=$(cat data-manifest.json | grep data-manifest-id | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')
+TEAM_IMAGES_ID=$(cat data-manifest.json | grep team-images-id | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')
+echo "$TRAVIS_BRANCH branch, DATA_VERSION = $DATA_VERSION, manifest id = $DATA_MANIFEST_ID"
 
 # get data from synapse
-synapse -u $SYNAPSE_USERNAME -p $SYNAPSE_PASSWORD cat --version $DATA_VERSION syn18387112 | tail -n +2 | while IFS=, read -r id version; do
+synapse -u $SYNAPSE_USERNAME -p $SYNAPSE_PASSWORD cat --version $DATA_VERSION $DATA_MANIFEST_ID | tail -n +2 | while IFS=, read -r id version; do
   synapse -u $SYNAPSE_USERNAME -p $SYNAPSE_PASSWORD get --downloadLocation $DATA_DIR -v $version $id ;
 done
 
-synapse -u $SYNAPSE_USERNAME -p $SYNAPSE_PASSWORD get -r --downloadLocation $TEAM_IMAGES_DIR/ syn12861877
+synapse -u $SYNAPSE_USERNAME -p $SYNAPSE_PASSWORD get -r --downloadLocation $TEAM_IMAGES_DIR/ $TEAM_IMAGES_ID
 
 echo "Data Files: "
 ls -al $WORKING_DIR
