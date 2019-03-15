@@ -20,9 +20,9 @@ DATA_DIR=$WORKING_DIR/data
 TEAM_IMAGES_DIR=$DATA_DIR/team_images
 
 # Version key/value should be on his own line
-DATA_VERSION=$(cat data-manifest.json | grep data-version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')
-DATA_MANIFEST_ID=$(cat data-manifest.json | grep data-manifest-id | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')
-TEAM_IMAGES_ID=$(cat data-manifest.json | grep team-images-id | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')
+DATA_VERSION=$(cat $WORKING_DIR/data-manifest.json | grep data-version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')
+DATA_MANIFEST_ID=$(cat $WORKING_DIR/data-manifest.json | grep data-manifest-id | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')
+TEAM_IMAGES_ID=$(cat $WORKING_DIR/data-manifest.json | grep team-images-id | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')
 echo "$TRAVIS_BRANCH branch, DATA_VERSION = $DATA_VERSION, manifest id = $DATA_MANIFEST_ID"
 
 # get data from synapse
