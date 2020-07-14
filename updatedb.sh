@@ -16,13 +16,13 @@ DB_USER_ESC="'${DB_USER//\'/$q_mid}'"
 DB_PASS_ESC="'${DB_PASS//\'/$q_mid}'"
 
 # clean up from previous builds
-ssh -i ~/.ssh/agora-access.pem ec2-user@$BASTIAN_HOST "rm -rf /tmp/work"
+ssh -i ~/.ssh/agora-travis.pem ec2-user@$BASTIAN_HOST "rm -rf /tmp/work"
 
 # create directories for data
-ssh -i ~/.ssh/agora-access.pem ec2-user@$BASTIAN_HOST "mkdir -p /tmp/work/data/team_images"
+ssh -i ~/.ssh/agora-travis.pem ec2-user@$BASTIAN_HOST "mkdir -p /tmp/work/data/team_images"
 
 # setup script on bastian
-scp -i ~/.ssh/agora-access.pem import-data.sh data-manifest.json ec2-user@$BASTIAN_HOST:/tmp/work/.
+scp -i ~/.ssh/agora-travis.pem import-data.sh data-manifest.json ec2-user@$BASTIAN_HOST:/tmp/work/.
 
 # run import on bastian
-ssh -i ~/.ssh/agora-access.pem ec2-user@$BASTIAN_HOST "bash /tmp/work/import-data.sh $TRAVIS_BRANCH $SYNAPSE_USERNAME_ESC $SYNAPSE_PASSWORD_ESC $DB_HOST $DB_USER_ESC $DB_PASS_ESC"
+ssh -i ~/.ssh/agora-travis.pem ec2-user@$BASTIAN_HOST "bash /tmp/work/import-data.sh $TRAVIS_BRANCH $SYNAPSE_USERNAME_ESC $SYNAPSE_PASSWORD_ESC $DB_HOST $DB_USER_ESC $DB_PASS_ESC"
