@@ -56,7 +56,7 @@ mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabas
 mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection genesmetabolomics --jsonArray --drop --file $DATA_DIR/metabolomics.json
 mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection genesneuropathcorr --jsonArray --drop --file $DATA_DIR/neuropath_corr.json
 mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection geneexpvalidation --jsonArray --drop --file $DATA_DIR/target_exp_validation_harmonized.json
-mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection genescoredistribution --json --drop --file $DATA_DIR/distribution_data.json
+mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection genescoredistribution --drop --file $DATA_DIR/distribution_data.json
 mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection genesoverallscores --jsonArray --drop --file $DATA_DIR/overall_scores.json
 
 pushd $TEAM_IMAGES_DIR
