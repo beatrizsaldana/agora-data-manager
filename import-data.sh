@@ -25,11 +25,19 @@ DATA_MANIFEST_ID=$(cat $WORKING_DIR/data-manifest.json | grep data-manifest-id |
 TEAM_IMAGES_ID=$(cat $WORKING_DIR/data-manifest.json | grep team-images-id | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')
 echo "$TRAVIS_BRANCH branch, DATA_VERSION = $DATA_VERSION, manifest id = $DATA_MANIFEST_ID"
 
-# get data from synapse
-synapse -u $SYNAPSE_USERNAME -p $SYNAPSE_PASSWORD cat --version $DATA_VERSION $DATA_MANIFEST_ID | tail -n +2 | while IFS=, read -r id version; do
-  synapse -u $SYNAPSE_USERNAME -p $SYNAPSE_PASSWORD get --downloadLocation $DATA_DIR -v $version $id ;
-done
+# Download the manifest file from synapse
+synapse -u $SYNAPSE_USERNAME -p $SYNAPSE_PASSWORD get --downloadLocation $DATA_DIR -v $DATA_VERSION $DATA_MANIFEST_ID
 
+# Ensure there's a newline at the end of the manifest file; otherwise the last listed file will not be downloaded
+echo >> $DATA_DIR/data_manifest.csv
+
+# Download all files referenced in the manifest from synapse
+cat $DATA_DIR/data_manifest.csv | tail -n +2 | while IFS=, read -r id version; do
+  echo Downloading $id,$version
+    synapse -u $SYNAPSE_USERNAME -p $SYNAPSE_PASSWORD get --downloadLocation $DATA_DIR -v $version $id ;
+  done
+
+# Download team images
 synapse -u $SYNAPSE_USERNAME -p $SYNAPSE_PASSWORD get -r --downloadLocation $TEAM_IMAGES_DIR/ $TEAM_IMAGES_ID
 
 echo "Data Files: "
