@@ -59,7 +59,7 @@ mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabas
 mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection genescoredistribution --drop --file $DATA_DIR/distribution_data.json
 mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection genesoverallscores --jsonArray --drop --file $DATA_DIR/overall_scores.json
 
-mongosh --host $DB_HOST -u $DB_USER -p $DB_PASS --authenticationDatabase admin -f mongosh/createIndexes.js
+mongo --host $DB_HOST -u $DB_USER -p $DB_PASS --authenticationDatabase admin mongosh/createIndexes.js
 
 pushd $TEAM_IMAGES_DIR
 ls -1r *.{jpg,jpeg} | while read x; do mongofiles -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase $DB_USER -v put $x --replace; echo $x; done
