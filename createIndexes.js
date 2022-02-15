@@ -1,8 +1,7 @@
-db = connect( 'agora' );
+db = db.getSiblingDB('agora')
 
 print('Database: ' + db.getName());
 print('Host: ' + db.serverStatus().host);
-printjson(db.teaminfo.getIndexes());
 
 db.teaminfo.createIndex({
     'program'   : 1,
