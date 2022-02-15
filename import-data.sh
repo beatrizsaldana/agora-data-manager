@@ -41,6 +41,7 @@ cat $DATA_DIR/data_manifest.csv | tail -n +2 | while IFS=, read -r id version; d
 synapse -u $SYNAPSE_USERNAME -p $SYNAPSE_PASSWORD get -r --downloadLocation $TEAM_IMAGES_DIR/ $TEAM_IMAGES_ID
 
 echo "Data Files: "
+ls -al $CURRENT_DIR
 ls -al $WORKING_DIR
 ls -al $DATA_DIR
 ls -al $TEAM_IMAGES_DIR
@@ -59,7 +60,7 @@ mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabas
 mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection genescoredistribution --drop --file $DATA_DIR/distribution_data.json
 mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection genesoverallscores --jsonArray --drop --file $DATA_DIR/overall_scores.json
 
-mongo --host $DB_HOST -u $DB_USER -p $DB_PASS --authenticationDatabase admin createIndexes.js
+mongo --host $DB_HOST -u $DB_USER -p $DB_PASS --authenticationDatabase admin $CURRENT_DIR/createIndexes.js
 
 pushd $TEAM_IMAGES_DIR
 ls -1r *.{jpg,jpeg} | while read x; do mongofiles -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase $DB_USER -v put $x --replace; echo $x; done
