@@ -8,7 +8,6 @@ const collections = [
     {
         name: 'geneinfo',
         indexes: [
-            { ensembl_gene_id: 1 },
             { ensembl_gene_id: 1, hgnc_symbol: 1 },
             { hgnc_symbol: 1 },
             { nominations: -1, hgnc_symbol: 1 }
@@ -19,8 +18,7 @@ const collections = [
         indexes: [
             { ensembl_gene_id: 1, tissue: 1, model: 1 },
             { ensembl_gene_id: 1, model: 1 },
-            { hgnc_symbol: 1, tissue: 1, model: 1 },
-            { hgnc_symbol: 1, model: 1 },
+            { hgnc_symbol: 1, tissue: 1, model: 1 }
         ]
     },
     {
@@ -33,15 +31,13 @@ const collections = [
     {
         name: 'genesmetabolomics',
         indexes: [
-            { ensembl_gene_id: 1 },
-            { associated_gene_name: 1 },
+            { ensembl_gene_id: 1 }
         ]
     },
     {
         name: 'genesproteomics',
         indexes: [
-            { hgnc_symbol: 1 },
-            { uniprotid: 1 },
+            { ensembl_gene_id: 1 }
         ]
     }
 ];
