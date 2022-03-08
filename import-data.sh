@@ -29,7 +29,7 @@ echo "$TRAVIS_BRANCH branch, DATA_VERSION = $DATA_VERSION, manifest id = $DATA_M
 synapse -u $SYNAPSE_USERNAME -p $SYNAPSE_PASSWORD get --downloadLocation $DATA_DIR -v $DATA_VERSION $DATA_MANIFEST_ID
 
 # Ensure there's a newline at the end of the manifest file; otherwise the last listed file will not be downloaded
-echo >> $DATA_DIR/data_manifest.csv
+# echo >> $DATA_DIR/data_manifest.csv
 
 # Download all files referenced in the manifest from synapse
 cat $DATA_DIR/data_manifest.csv | tail -n +2 | while IFS=, read -r id version; do
