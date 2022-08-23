@@ -1,5 +1,5 @@
 language: python
-python: 3.5
+python: 3.8
 cache: pip
 fast_finish: true
 
@@ -10,11 +10,12 @@ branches:
   - prod
 
 before_install:
-  - openssl aes-256-cbc -K $encrypted_0c38008307ac_key -iv $encrypted_0c38008307ac_iv -in agora-travis.pem.enc -out ~/.ssh/agora-travis.pem -d
+  - openssl aes-256-cbc -K $encrypted_3307e78034e0_key -iv $encrypted_3307e78034e0_iv -in agora-ci-develop.pem.enc -out ~/.ssh/agora-ci-develop.pem -d
+  - openssl aes-256-cbc -K $encrypted_76f307832d54_key -iv $encrypted_76f307832d54_iv -in agora-ci-prod.pem.enc -out ~/.ssh/agora-ci-staging.pem -d
+  - openssl aes-256-cbc -K $encrypted_76f307832d54_key -iv $encrypted_76f307832d54_iv -in agora-ci-prod.pem.enc -out ~/.ssh/agora-ci-prod.pem -d
   - eval "$(ssh-agent -s)"
-  - chmod 600 ~/.ssh/agora-travis.pem
-  - echo -e "Host $BASTIAN_HOST\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-  - ssh-add ~/.ssh/agora-travis.pem
+  - chmod 600 ~/.ssh/*.pem
+  - ssh-add ~/.ssh/agora-ci-$TRAVIS_BRANCH.pem
 
 script:
   - ./updatedb.sh || travis_terminate 1
