@@ -3,8 +3,8 @@ Tool to manage agora data
 
 # Purpose
 This project allows Agora maintainers to update the Agora database with
-new versions of gene data from Synapse.  This is a, manually triggered,
-self service update. 
+new versions of gene data from Synapse.  This is a manually triggered,
+self-service update. 
 
 # Execution
 
@@ -15,11 +15,17 @@ self service update.
 To deploy an updated data version to the Agora development database
 1. Increment `data-version` in `data-manifest.json` on the `develop` branch.
 2. Commit the change
-3. The [CI system](https://travis-ci.org/Sage-Bionetworks/agora-data-manager) automatically updates the new version to the DB
+3. The [CI system](https://travis-ci.org/Sage-Bionetworks/agora-data-manager) automatically updates the dev DB
 
 
-To deploy an updated data version to the staging and prod database.
-1. Merge data-version update to staging and prod branches.
+To deploy an updated data version to the Agora staging database:
+1. Merge the data-version update from the dev branch to the staging branch.
+2. The [CI system](https://travis-ci.org/Sage-Bionetworks/agora-data-manager) automatically updates the staging DB
+
+To deploy an updated data version to the Agora production database:
+1. Merge the data-version update from the staging branch to the production branch.
+2. The [CI system](https://travis-ci.org/Sage-Bionetworks/agora-data-manager) automatically updates the production DB
+
 
 # Setup
 
