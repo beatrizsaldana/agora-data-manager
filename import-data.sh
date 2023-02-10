@@ -61,6 +61,7 @@ mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabas
 mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection rnaboxdistribution --jsonArray --drop --file $DATA_DIR/rna_distribution_data.json
 mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection proteomicsboxdistribution --jsonArray --drop --file $DATA_DIR/proteomics_distribution_data.json
 mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection proteomicstmt --jsonArray --drop --file $DATA_DIR/proteomics_tmt.json
+mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection genesbiodomains --jsonArray --drop --file $DATA_DIR/genes_biodomains.json
 
 mongo --host $DB_HOST -u $DB_USER -p $DB_PASS --authenticationDatabase admin $WORKING_DIR/create-indexes.js
 
