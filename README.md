@@ -1,5 +1,5 @@
 # Overview
-Tool to manage agora data
+Agora Data Manager is a tool that loads the JSON files into Agora's document database instances in our AWS environments.
 
 # Purpose
 This project allows Agora maintainers to update the Agora database with
