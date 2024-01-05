@@ -4,7 +4,7 @@ Agora Data Manager is a tool that loads the JSON files into Agora's document dat
 # Purpose
 This project allows Agora maintainers to update the Agora database with
 new versions of gene data from Synapse.  This is a manually triggered,
-self-service update. 
+self-service update.
 
 # Execution
 
