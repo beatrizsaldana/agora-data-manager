@@ -23,7 +23,8 @@ jobs:
       name: ${{ github.ref_name }}
 
     steps:
-      - uses: actions/checkout@v4
+      # use older checkout version due to https://github.com/dawidd6/action-download-artifact/issues/261
+      - uses: actions/checkout@v2.28.0
       - name: Import Synapse Data
         run: ./import-data.sh $BRANCH $SYNAPSE_USERNAME $SYNAPSE_PASSWORD $DB_HOST $DB_USER $DB_PASS
         env:
