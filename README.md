@@ -57,8 +57,8 @@ Context specific secrets for each environment that corresponds to a git branch (
 ## Self hosted runners
 
 [agora2-infra] repository deploys a bastian host in AWS for each environment which have access to
-the databases.  We manually configure a [Github self-hosted runner] for each bastian host,
-a label is applied to each runner to match the corresponding deployment branch name (develop/staging/prod).
+the databases.  We manually configure a [Github self-hosted runner](https://docs.github.com/en/actions/hosting-your-own-runners)
+for each bastian host, a label is applied to each runner to match the corresponding git branch name (develop/staging/prod).
 Each runner corresponds to an environment which corresponds to a git branch. The update is
 executed from these runners.  When a push happens on a branch (i.e. develop), the update
 is executed on the `agora-bastian-develop` runner which in turn updates the development database.
@@ -66,6 +66,58 @@ is executed on the `agora-bastian-develop` runner which in turn updates the deve
 
 ![alt text][self_hosted_runners]
 
+
+### Setup self hosted runners
+
+Github self hosted runners are deployed with a [Sceptre template config file])(https://github.com/Sage-Bionetworks/agora2-infra/blob/main/config/agoradev/develop/agora-bastian.yaml).
+
+Self Hosted Runner setup:
+* Deploy the template to the Agora AWS account.
+* Login to AWS console and goto `EC2 -> select the deployed instance -> Connect -> Session Manager -> Connect` to gain ssh access to the instance.
+* Follow the instructions to install the [Github self hosted runner](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/adding-self-hosted-runners#adding-a-self-hosted-runner-to-a-repository).  We installed it to the `/home/ssm-user/actions-runner` folder.
+* Run the `config.sh` script to configure the runner.  !! Important !! Make sure to set the runner `name` and `label` corresponding to the desired deployment environment (develop/staging/prod)..
+```text
+sh-4.2$ pwd
+/home/ssm-user/actions-runner
+
+sh-4.2$ ./config.sh --url https://github.com/Sage-Bionetworks/agora-data-manager --token XXXXXXXXXXXXXXXXX6VLI
+
+--------------------------------------------------------------------------------
+|        ____ _ _   _   _       _          _        _   _                      |
+|       / ___(_) |_| | | |_   _| |__      / \   ___| |_(_) ___  _ __  ___      |
+|      | |  _| | __| |_| | | | | '_ \    / _ \ / __| __| |/ _ \| '_ \/ __|     |
+|      | |_| | | |_|  _  | |_| | |_) |  / ___ \ (__| |_| | (_) | | | \__ \     |
+|       \____|_|\__|_| |_|\__,_|_.__/  /_/   \_\___|\__|_|\___/|_| |_|___/     |
+|                                                                              |
+|                       Self-hosted runner registration                        |
+|                                                                              |
+--------------------------------------------------------------------------------
+
+# Authentication
+
+
+√ Connected to GitHub
+
+# Runner Registration
+
+Enter the name of the runner group to add this runner to: [press Enter for Default]
+
+Enter the name of runner: [press Enter for ip-10-XXX-XXX-XXX] agora-bastian-prod
+
+This runner will have the following labels: 'self-hosted', 'Linux', 'X64'
+Enter any additional labels (ex. label-1,label-2): [press Enter to skip] prod
+
+√ Runner successfully added
+√ Runner connection is good
+
+# Runner settings
+
+Enter name of work folder: [press Enter for _work]
+
+√ Settings Saved.
+```
+* Setup the [GH runner agent to run as a service](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/configuring-the-self-hosted-runner-application-as-a-service)
+* Run the agent and then check the [GH Runners page](https://github.com/Sage-Bionetworks/agora-data-manager/settings/actions/runners) to make sure that the runner is in `Idle` status.
 
 [db_update]: agora-db-update.drawio.png "update diagram"
 [github_secrets]: github_secrets.png "github secrets screen"
