@@ -6,6 +6,9 @@ on:
   push:
     branches: ['develop', 'staging', 'prod' ]
 
+env:
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
+
 jobs:
   tests:
     runs-on: ubuntu-latest
@@ -21,8 +24,6 @@ jobs:
     # variables in context environments are setup in github to match branch names
     environment:
       name: ${{ github.ref_name }}
-    env:
-      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
 
     steps:
       # use older checkout version due to https://github.com/dawidd6/action-download-artifact/issues/261
