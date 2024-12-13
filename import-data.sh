@@ -65,7 +65,7 @@ mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabas
 mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection genesbiodomains --jsonArray --drop --file $DATA_DIR/genes_biodomains.json
 mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection biodomaininfo --jsonArray --drop --file $DATA_DIR/biodomain_info.json
 
-mongo --host $DB_HOST -u $DB_USER -p $DB_PASS --authenticationDatabase admin $WORKING_DIR/create-indexes.js
+mongosh --host $DB_HOST -u $DB_USER -p $DB_PASS --authenticationDatabase admin $WORKING_DIR/create-indexes.js
 
 pushd $TEAM_IMAGES_DIR
 ls -1r *.{jpg,jpeg,png} | while read x; do mongofiles -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase $DB_USER -v put $x; echo $x; done
