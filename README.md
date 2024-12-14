@@ -36,10 +36,9 @@ The following secrets need to be setup in Github for the scripts to deploy datab
 
 Global secrets:
 
-| Variable             | Description                       | Example                     |
-|----------------------|-----------------------------------|-----------------------------|
-| SYNAPSE_USERNAME     | The Synapse service user          | syn-service-user            |
-| SYNAPSE_PASSWORD     | The Synapse service user password | supersecret                 |
+| Variable             | Description                      | Example                          |
+|----------------------|----------------------------------|----------------------------------|
+| SYNAPSE_PASSWORD     | Synapse service user token (PAT) | glY4283tLQHZ...0eXAiOi...JKV1QiL |
 
 
 Context specific secrets for each environment that corresponds to a git branch (develop/staging/prod):
