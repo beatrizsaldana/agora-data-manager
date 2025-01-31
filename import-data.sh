@@ -44,10 +44,12 @@ ls -al $WORKING_DIR
 ls -al $DATA_DIR
 ls -al $TEAM_IMAGES_DIR
 
-# Check if dataversion exists
+# Check if dataversion exists and handle different data format
 DATAVERSION_PATH="${DATA_DIR}/dataversion.json"
+DATAVERSION_FLAG="--jsonArray"
 if [ ! -f "${DATAVERSION_PATH}" ]; then
   DATAVERSION_PATH="${WORKING_DIR}/data-manifest.json"
+  DATAVERSION_FLAG=""
 fi
 
 # Import synapse data to database
@@ -71,7 +73,7 @@ mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabas
 mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection biodomaininfo --jsonArray --drop --file $DATA_DIR/biodomain_info.json
 
 echo "Importing dataversion from ${DATAVERSION_PATH}"
-mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection dataversion --jsonArray --drop --file $DATAVERSION_PATH
+mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection dataversion $DATAVERSION_FLAG --drop --file $DATAVERSION_PATH
 
 mongosh --host $DB_HOST -u $DB_USER -p $DB_PASS --authenticationDatabase admin $WORKING_DIR/create-indexes.js
 
