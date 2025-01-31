@@ -60,7 +60,7 @@ the databases.  We manually configure a [Github self-hosted runner](https://docs
 for each bastian host, a label is applied to each runner to match the corresponding git branch name (develop/staging/prod).
 Each runner corresponds to an environment which corresponds to a git branch. The update is
 executed from these runners.  When a push happens on a branch (i.e. develop), the update
-is executed on the `agora-bastion-develop` runner which in turn updates the development database.
+is executed on the self-hosted runner with the `develop` label, which in turn updates the development database.
 
 
 ![alt text][self_hosted_runners]
