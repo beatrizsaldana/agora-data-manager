@@ -44,6 +44,12 @@ ls -al $WORKING_DIR
 ls -al $DATA_DIR
 ls -al $TEAM_IMAGES_DIR
 
+# Check if dataversion exists
+DATAVERSION_PATH="${DATA_DIR}/dataversion.json"
+if [ ! -f "${DATAVERSION_PATH}" ]; then
+  DATAVERSION_PATH="${WORKING_DIR}/data-manifest.json"
+fi 
+
 # Import synapse data to database
 # Not using --mode upsert for now because we don't have unique indexes properly set for the collections
 
@@ -63,7 +69,7 @@ mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabas
 mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection proteomicssrm --jsonArray --drop --file $DATA_DIR/proteomics_srm.json
 mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection genesbiodomains --jsonArray --drop --file $DATA_DIR/genes_biodomains.json
 mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection biodomaininfo --jsonArray --drop --file $DATA_DIR/biodomain_info.json
-mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection dataversion --jsonArray --drop --file $WORKING_DIR/data-manifest.json
+mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection dataversion --jsonArray --drop --file $DATAVERSION_PATH
 
 mongosh --host $DB_HOST -u $DB_USER -p $DB_PASS --authenticationDatabase admin $WORKING_DIR/create-indexes.js
 
