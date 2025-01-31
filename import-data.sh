@@ -48,7 +48,7 @@ ls -al $TEAM_IMAGES_DIR
 DATAVERSION_PATH="${DATA_DIR}/dataversion.json"
 if [ ! -f "${DATAVERSION_PATH}" ]; then
   DATAVERSION_PATH="${WORKING_DIR}/data-manifest.json"
-fi 
+fi
 
 # Import synapse data to database
 # Not using --mode upsert for now because we don't have unique indexes properly set for the collections
