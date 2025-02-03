@@ -20,12 +20,12 @@ mkdir -p $TEAM_IMAGES_DIR
 
 # Version key/value should be on his own line
 DATA_VERSION=$(cat $WORKING_DIR/data-manifest.json | grep data_version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')
-DATA_MANIFEST_ID=$(cat $WORKING_DIR/data-manifest.json | grep data_manifest_id | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')
+DATA_FILE=$(cat $WORKING_DIR/data-manifest.json | grep data_file | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')
 TEAM_IMAGES_ID=$(cat $WORKING_DIR/data-manifest.json | grep team_images_id | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')
-echo "$BRANCH branch, DATA_VERSION = $DATA_VERSION, manifest id = $DATA_MANIFEST_ID"
+echo "$BRANCH branch, DATA_VERSION = $DATA_VERSION, manifest id = $DATA_FILE"
 
 # Download the manifest file from synapse
-synapse -p $SYNAPSE_PASSWORD get --downloadLocation $DATA_DIR -v $DATA_VERSION $DATA_MANIFEST_ID
+synapse -p $SYNAPSE_PASSWORD get --downloadLocation $DATA_DIR -v $DATA_VERSION $DATA_FILE
 
 # Ensure there's a newline at the end of the manifest file; otherwise the last listed file will not be downloaded
 # echo >> $DATA_DIR/data_manifest.csv
