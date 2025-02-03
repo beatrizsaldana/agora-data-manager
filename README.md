@@ -14,17 +14,17 @@ self-service update.
 # Workflow
 
 To deploy an updated data version to the Agora development database
-1. Increment `data-version` in `data-manifest.json` on the `develop` branch.
+1. Increment `data_version` in `data-manifest.json` on the `develop` branch.
 2. Commit the change
 3. The Github action CI system automatically updates the dev DB
 
 
 To deploy an updated data version to the Agora staging database:
-1. Merge the data-version update from the dev branch to the staging branch.
+1. Merge the data_version update from the dev branch to the staging branch.
 2. The Github action CI system automatically updates the dev DB
 
 To deploy an updated data version to the Agora production database:
-1. Merge the data-version update from the staging branch to the production branch.
+1. Merge the data_version update from the staging branch to the production branch.
 2. The Github action CI system automatically updates the dev DB
 
 
@@ -55,12 +55,12 @@ Context specific secrets for each environment that corresponds to a git branch (
 
 ## Self hosted runners
 
-[agora2-infra] repository deploys a bastian host in AWS for each environment which have access to
+[agora-infra-v3] repository deploys a bastian host in AWS for each environment which have access to
 the databases.  We manually configure a [Github self-hosted runner](https://docs.github.com/en/actions/hosting-your-own-runners)
 for each bastian host, a label is applied to each runner to match the corresponding git branch name (develop/staging/prod).
 Each runner corresponds to an environment which corresponds to a git branch. The update is
 executed from these runners.  When a push happens on a branch (i.e. develop), the update
-is executed on the `agora-bastian-develop` runner which in turn updates the development database.
+is executed on the self-hosted runner with the `develop` label, which in turn updates the development database.
 
 
 ![alt text][self_hosted_runners]
@@ -68,7 +68,7 @@ is executed on the `agora-bastian-develop` runner which in turn updates the deve
 
 ### Setup self hosted runners
 
-Github self hosted runners are deployed with a [Sceptre template config file])(https://github.com/Sage-Bionetworks/agora2-infra/blob/main/config/agoradev/develop/agora-bastian.yaml).
+Github self hosted runners are deployed with [Cloudformation](https://github.com/Sage-Bionetworks-IT/agora-infra-v3/blob/dev/src/bastion_stack.py).
 
 Self Hosted Runner setup:
 * Deploy the template to the Agora AWS account.
@@ -121,5 +121,5 @@ Enter name of work folder: [press Enter for _work]
 [db_update]: agora-db-update.drawio.png "update diagram"
 [github_secrets]: github_secrets.png "github secrets screen"
 [self_hosted_runners]: self-hosted-runners.png "self hosted runners"
-[agora2-infra]: https://github.com/Sage-Bionetworks/agora2-infra "agora2-infra repository"
+[agora-infra-v3]: https://github.com/Sage-Bionetworks-IT/agora-infra-v3 "agora-infra-v3 repository"
 [Github self-hosted runners]: https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners#about-self-hosted-runners

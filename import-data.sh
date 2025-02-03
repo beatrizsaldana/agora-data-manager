@@ -19,9 +19,9 @@ TEAM_IMAGES_DIR=$DATA_DIR/team_images
 mkdir -p $TEAM_IMAGES_DIR
 
 # Version key/value should be on his own line
-DATA_VERSION=$(cat $WORKING_DIR/data-manifest.json | grep data-version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')
-DATA_MANIFEST_ID=$(cat $WORKING_DIR/data-manifest.json | grep data-manifest-id | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')
-TEAM_IMAGES_ID=$(cat $WORKING_DIR/data-manifest.json | grep team-images-id | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')
+DATA_VERSION=$(cat $WORKING_DIR/data-manifest.json | grep data_version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')
+DATA_MANIFEST_ID=$(cat $WORKING_DIR/data-manifest.json | grep data_manifest_id | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')
+TEAM_IMAGES_ID=$(cat $WORKING_DIR/data-manifest.json | grep team_images_id | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')
 echo "$BRANCH branch, DATA_VERSION = $DATA_VERSION, manifest id = $DATA_MANIFEST_ID"
 
 # Download the manifest file from synapse
@@ -44,6 +44,14 @@ ls -al $WORKING_DIR
 ls -al $DATA_DIR
 ls -al $TEAM_IMAGES_DIR
 
+# Check if dataversion exists and handle different data format
+DATAVERSION_PATH="${DATA_DIR}/dataversion.json"
+DATAVERSION_FLAG="--jsonArray"
+if [ ! -f "${DATAVERSION_PATH}" ]; then
+  DATAVERSION_PATH="${WORKING_DIR}/data-manifest.json"
+  DATAVERSION_FLAG=""
+fi
+
 # Import synapse data to database
 # Not using --mode upsert for now because we don't have unique indexes properly set for the collections
 
@@ -63,6 +71,9 @@ mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabas
 mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection proteomicssrm --jsonArray --drop --file $DATA_DIR/proteomics_srm.json
 mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection genesbiodomains --jsonArray --drop --file $DATA_DIR/genes_biodomains.json
 mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection biodomaininfo --jsonArray --drop --file $DATA_DIR/biodomain_info.json
+
+echo "Importing dataversion from ${DATAVERSION_PATH}"
+mongoimport -h $DB_HOST -d agora -u $DB_USER -p $DB_PASS --authenticationDatabase admin --collection dataversion $DATAVERSION_FLAG --drop --file $DATAVERSION_PATH
 
 mongosh --host $DB_HOST -u $DB_USER -p $DB_PASS --authenticationDatabase admin $WORKING_DIR/create-indexes.js
 
